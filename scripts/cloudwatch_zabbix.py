@@ -51,19 +51,34 @@ class AwsZabbix:
         metric_list = []
         for data in resp["Metrics"]:
             metric = Metric(name=data["MetricName"], namespace=data["Namespace"])
+            if self.service == "elb":
+                for dimension in data["Dimensions"]:
+                    if dimension["Name"] == "AvailabilityZone":
+                       metric.name = data["MetricName"] + "." + dimension["Value"]
             metric_list.append(metric)
         return metric_list
 
     def __get_metric_stats(self, metric_name, metric_namespace, stat_type="Average", timerange_min=10, period_sec=300):
+        dimensions = [
+            {
+                'Name': self.id_dimentions[self.service],
+                'Value': self.identity
+            }
+        ]
+        if self.service == "elb":
+            split_metric_name = metric_name.split(".")
+            if len(split_metric_name) == 2:
+                metric_name = split_metric_name[0]
+                dimensions.append(
+                    {
+                        'Name': 'AvailabilityZone',
+                        'Value': split_metric_name[1]
+                    }
+                )
         stats = self.client.get_metric_statistics(
             Namespace=metric_namespace,
             MetricName=metric_name,
-            Dimensions = [
-                {
-                    'Name': self.id_dimentions[self.service],
-                    'Value': self.identity
-                }
-            ],
+            Dimensions=dimensions,
             StartTime=datetime.utcnow() - timedelta(minutes=timerange_min),
             EndTime=datetime.utcnow(),
             Period=period_sec,
