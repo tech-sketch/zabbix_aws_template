@@ -21,7 +21,7 @@ Operation has been confirmed under the following environments.
 # Amazon CloudWatch Metrics monitoring Template
 ## Architecture
 
-![CloudWatch monitoring architecture](wiki/images/cloudwatch_zabbix_arch.png)
+![CloudWatch monitoring architecture](https://github.com/tech-sketch/zabbix_aws_template/wiki/images/cloudwatch_zabbix_arch.png)
 
 ## How to use
 
