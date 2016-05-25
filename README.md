@@ -1,4 +1,4 @@
-x AWS Monitoring Templates
+# Zabbix AWS Monitoring Templates
 
 This template collection is for effective monitoring AWS(Amazon Web Services) with Zabbix.
 
