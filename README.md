@@ -41,6 +41,8 @@ And please set exec permission to Zabbix Server user(default: zabbix).
 Please import templates/3.0/cloudwatch_template.xml at Zabbix WebGUI ([Configuration]->[Templates]->Import).
 (In case of Zabbix 2.2: templates/2.2/cloudwatch_template.xml)
 
+If you want to monitor the billing data, please import awsbilling_template.xml.
+
 ### Register hosts
 
 Please register Zabbix hosts for EC2 instances, RDS instances, ELB, EBS volume or others.
@@ -52,6 +54,15 @@ In case of an EC2 instance:
 * Macros:
     * {$REGION} : set AWS region name(e.g. ap-northeast-1)
     * {$KEY} : set AWS Access Key ID (e.g. AKI........)
+    * {$SECRET} : set AWS Secret Access Key
+
+In case of Billing data:
+
+* Host name: any
+* Templates: Template AWS Billing
+* Macros:
+    * {$REGION} : set AWS region name to us-east-1
+    * {$KEY} : set AWS Access Key ID
     * {$SECRET} : set AWS Secret Access Key
 
 #### Tip
