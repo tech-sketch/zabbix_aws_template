@@ -204,7 +204,7 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--accesskey', default=os.getenv("AWS_ACCESS_KEY_ID"), help='set AWS Access Key ID')
     parser.add_argument('-s', '--secret', default=os.getenv("AWS_SECRET_ACCESS_KEY"), help='set AWS Secret Access Key')
     parser.add_argument('-i', '--identity', required=True, help='set Identity data (ec2: InstanceId, elb: LoadBalancerName, rds: DBInstanceIdentifier, ebs: VolumeId)')
-    parser.add_argument('-m', '--send-mode', default=False, help='set True if you send statistic data (e.g.: True or False)')
+    parser.add_argument('-m', '--send-mode', default='False', help='set True if you send statistic data (e.g.: True or False)')
     parser.add_argument('-t', '--timerange', type=int, default=10, help='set Timerange min')
     parser.add_argument('service', metavar='service_name', help='set Service name (e.g.: ec2 or elb or rds')
 
