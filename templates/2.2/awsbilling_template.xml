@@ -24,7 +24,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>cloudwatch_zabbix.py[&quot;billing&quot;,&quot;-r&quot;,{$REGION},&quot;-a&quot;,{$KEY},&quot;-s&quot;,{$SECRET},&quot;-i&quot;,{HOST.HOST},&quot;-t&quot;,{$TIMERANGE},&quot;-u&quot;,&quot;USD&quot;,&quot;-m&quot;,&quot;True&quot;]</key>
+                    <key>cloudwatch_zabbix.py[&quot;billing&quot;,&quot;-r&quot;,{$REGION},&quot;-a&quot;,{$KEY},&quot;-s&quot;,{$SECRET},&quot;-i&quot;,{HOST.HOST},&quot;-t&quot;,{$TIMERANGE},&quot;,&quot;-m&quot;,&quot;True&quot;]</key>
                     <delay>3600</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -64,7 +64,7 @@
                     <type>10</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>cloudwatch_zabbix.py[&quot;billing&quot;,&quot;-r&quot;,{$REGION},&quot;-a&quot;,{$KEY},&quot;-s&quot;,{$SECRET},&quot;-i&quot;,{HOST.HOST},&quot;-t&quot;,{$TIMERANGE},&quot;-u&quot;,&quot;USD&quot;]</key>
+                    <key>cloudwatch_zabbix.py[&quot;billing&quot;,&quot;-r&quot;,{$REGION},&quot;-a&quot;,{$KEY},&quot;-s&quot;,{$SECRET},&quot;-i&quot;,{HOST.HOST},&quot;-t&quot;,{$TIMERANGE},&quot;]</key>
                     <delay>3600</delay>
                     <status>0</status>
                     <allowed_hosts/>

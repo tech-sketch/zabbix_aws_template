@@ -20,14 +20,13 @@ class Metric:
 
 class AwsZabbix:
 
-    def __init__(self, region, access_key, secret, identity, service, timerange_min, unit,
+    def __init__(self, region, access_key, secret, identity, service, timerange_min,
                  zabbix_host='localhost', zabbix_port=10051):
         self.zabbix_host = zabbix_host
         self.zabbix_port = zabbix_port
         self.identity = identity
         self.service = service
         self.timerange_min = timerange_min
-        self.unit = unit
         self.id_dimentions = {
             'ec2':'InstanceId',
             'rds':'DBInstanceIdentifier',
@@ -47,7 +46,7 @@ class AwsZabbix:
             Dimensions = [
                 {
                     'Name': self.id_dimentions[self.service],
-                    'Value': (self.unit if self.service == "billing" else self.identity)
+                    'Value': ('USD' if self.service == "billing" else self.identity)
                 }
             ]
         )
@@ -66,7 +65,7 @@ class AwsZabbix:
             dimensions = [
                 {
                     'Name': self.id_dimentions[self.service],
-                    'Value': self.unit
+                    'Value': 'USD'
                 }
             ]
             if servicename != "billing":
@@ -109,13 +108,12 @@ class AwsZabbix:
         for metric in metric_list:
             servicename = self.service
             if self.service == "billing":
+                metric.unit = 'USD'
                 for dimension in metric.dimensions:
                     if dimension["Name"] == "ServiceName":
                         servicename = dimension["Value"]
-            stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min)
-            if self.service == "billing":
-                metric.unit = self.unit
             else:
+                stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min)
                 for datapoint in stats["Datapoints"]:
                     metric.unit = datapoint["Unit"]
                     break
@@ -211,12 +209,11 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--identity', required=True, help='set Identity data (ec2: InstanceId, elb: LoadBalancerName, rds: DBInstanceIdentifier, ebs: VolumeId)')
     parser.add_argument('-m', '--send-mode', default=False, help='set True if you send statistic data (e.g.: True or False)')
     parser.add_argument('-t', '--timerange', type=int, default=10, help='set Timerange min')
-    parser.add_argument('-u', '--unit', default=False, help='set Unit')
     parser.add_argument('service', metavar='service_name', help='set Service name (e.g.: ec2 or elb or rds')
 
     args = parser.parse_args()
 
-    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, service=args.service, timerange_min=args.timerange, unit=args.unit)
+    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, service=args.service, timerange_min=args.timerange)
 
     if args.send_mode:
         aws_zabbix.send_metric_data_to_zabbix()
