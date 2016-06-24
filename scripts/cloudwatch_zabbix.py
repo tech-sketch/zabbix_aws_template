@@ -109,9 +109,6 @@ class AwsZabbix:
             servicename = self.service
             if self.service == "billing":
                 metric.unit = 'USD'
-                for dimension in metric.dimensions:
-                    if dimension["Name"] == "ServiceName":
-                        servicename = dimension["Value"]
             else:
                 stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min)
                 for datapoint in stats["Datapoints"]:
