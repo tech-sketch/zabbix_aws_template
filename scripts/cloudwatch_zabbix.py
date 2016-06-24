@@ -215,7 +215,7 @@ if __name__ == '__main__':
 
     aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, service=args.service, timerange_min=args.timerange)
 
-    if args.send_mode:
+    if args.send_mode.upper() == 'TRUE':
         aws_zabbix.send_metric_data_to_zabbix()
     else:
         aws_zabbix.show_metriclist_lld()
