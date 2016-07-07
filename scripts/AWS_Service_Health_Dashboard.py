@@ -1,4 +1,5 @@
-mport re
+#!/bin/env python
+import re
 import argparse
 import calendar
 import datetime
@@ -16,15 +17,15 @@ from HTMLParser import HTMLParser
 class AWSSHDParser(HTMLParser):
 
 
-    def __init__(self, base_url, area, zabbix_host='localhost', zabbix_port=10051):
-            HTMLParser.__init__(self)
-            self.area = area
-            self.check = False
-            self.base_url = base_url
-            self.url_list = []
-            self.lld_json = json.loads('{"data":[]}')
-            self.zabbix_host = zabbix_host
-            self.zabbix_port = zabbix_port
+    def __init__(self, base_url, block, zabbix_host='localhost', zabbix_port=10051):
+        HTMLParser.__init__(self)
+        self.block = block
+        self.check = False
+        self.base_url = base_url
+        self.url_list = []
+        self.lld_json = json.loads('{"data":[]}')
+        self.zabbix_host = zabbix_host
+        self.zabbix_port = zabbix_port
 
 
     def get_rss(self, url):
@@ -35,7 +36,7 @@ class AWSSHDParser(HTMLParser):
         for entry in range(len(response.entries)):
             title = response.entries[entry].title
             published = response.entries[entry].published
-            
+
             pub = dateutil.parser.parse(published)
             uni = calendar.timegm(pub.utctimetuple())
             now = calendar.timegm(time.gmtime())
@@ -43,7 +44,7 @@ class AWSSHDParser(HTMLParser):
             if now - args.interval < uni:
                 send_json_string = '{"host":"", "key":"", "value":"", "clock":""}'
                 send_item = json.loads(send_json_string)
-                send_item["host"] = self.area
+                send_item["host"] = self.block
 
                 replace = re.compile(".+/rss/(.*?)(-(ap-[a-z]+-[0-9]|us-[a-z]+-[0-9]|eu-[a-z]+-[0-9]|sa-[a-z]+-[0-9]))*\.rss")
                 match = replace.match(url)
@@ -94,7 +95,7 @@ class AWSSHDParser(HTMLParser):
     def handle_starttag(self, tagname, attribute):
         if tagname.lower() == "div":
             for i in attribute:
-                if i[1] == self.area + "_block":
+                if i[1] == self.block + "_block":
                     self.check = True
         if self.check == True and tagname.lower() == "a":
             for i in attribute:
@@ -128,7 +129,6 @@ if __name__== "__main__":
     parser.add_argument('-b', '--block', default="AP", help='set AWS region block(e.g.:NA or SA or EU or AP)')
     parser.add_argument('-i', '--interval', type=int, help='set interval time (seconds)')
     parser.add_argument('-m', '--send-mode', default='False', help='set True if you send statistic data (e.g.: True or False)')
-    parser.add_argument('-a', '--area', required=True, help='set host (e.g.: NA or SA or EU or AP)')
     
     block_list = ["NA", "SA", "EU", "AP"]
     args = parser.parse_args()
@@ -151,6 +151,5 @@ if __name__== "__main__":
     if args.send_mode.upper() == "FALSE":
         print json.dumps(parser.lld_json)
         
-    time.sleep(10)
     parser.close()
     htmldata.close()
