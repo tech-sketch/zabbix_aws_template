@@ -128,7 +128,7 @@ if __name__== "__main__":
     parser = argparse.ArgumentParser(description='Get RSS list or Zabbix LLD format output from AWS Service Health Dashboard page.')
     parser.add_argument('-b', '--block', default="AP", help='set AWS region block(e.g.:NA or SA or EU or AP)')
     parser.add_argument('-i', '--interval', type=int, help='set interval time (seconds)')
-    parser.add_argument('-m', '--send-mode', default='False', help='set True if you send statistic data (e.g.: True or False)')
+    parser.add_argument('-m', '--send-mode', default='False', help='set True if you send AWS Service Health Dashboard status information. set False if you want to get lld format service list. (e.g.: True or False)')
     
     block_list = ["NA", "SA", "EU", "AP"]
     args = parser.parse_args()
