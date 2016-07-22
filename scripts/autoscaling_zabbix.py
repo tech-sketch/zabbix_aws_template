@@ -113,25 +113,25 @@ class AwsZabbix:
 
     def __create_host(self, host, interfaces, template_ids, groupid):
         try:
-            parms = {
+            params = {
                     'host':host,
                     'interfaces':interfaces,
                     'groups':[{'groupid':groupid}]
                 }
             if template_ids:
-                parms["templates"] = template_ids
+                params["templates"] = template_ids
 
-            response = self.zapi.host.create(parms)
+            self.zapi.host.create(params)
         except Already_Exists, e:
             hostid = self.__get_hostid([host])
-            parms = {
+            params = {
                     'hostid':hostid,
                     'groups':[{'groupid':groupid}]
                 }
             if template_ids:
-                parms["templates"] = template_ids
+                params["templates"] = template_ids
 
-            response = self.zapi.host.update(parms)
+            self.zapi.host.update(params)
             self.__create_interfaces(hostid, interfaces)
 
         return
