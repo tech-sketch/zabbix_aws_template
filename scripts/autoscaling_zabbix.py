@@ -113,19 +113,25 @@ class AwsZabbix:
 
     def __create_host(self, host, interfaces, template_ids, groupid):
         try:
-            response = self.zapi.host.create({
+            parms = {
                     'host':host,
                     'interfaces':interfaces,
-                    'templates':template_ids,
                     'groups':[{'groupid':groupid}]
-                })
+                }
+            if template_ids:
+                parms["templates"] = template_ids
+
+            response = self.zapi.host.create(parms)
         except Already_Exists, e:
             hostid = self.__get_hostid([host])
-            response = self.zapi.host.update({
+            parms = {
                     'hostid':hostid,
-                    'templates':template_ids,
                     'groups':[{'groupid':groupid}]
-                })
+                }
+            if template_ids:
+                parms["templates"] = template_ids
+
+            response = self.zapi.host.update(parms)
             self.__create_interfaces(hostid, interfaces)
 
         return
@@ -214,16 +220,17 @@ class AwsZabbix:
                 if tag['Key'] == 'ZabbixTemplates':
                     templates =  tag['Value'].split(',')
 
-            try:
-                response = self.zapi.template.get({
-                        'filter':{
-                            'host':templates
-                        }
-                    })
-                for template in response:
-                    template_ids.append({'templateid':template['templateid']}) 
-            except ZabbixAPIException, e:
-                print str(e)
+            if templates:
+                try:
+                    response = self.zapi.template.get({
+                            'filter':{
+                                'host':templates
+                            }
+                        })
+                    for template in response:
+                        template_ids.append({'templateid':template['templateid']}) 
+                except ZabbixAPIException, e:
+                    print str(e)
 
             for instance in group['Instances']:
                 instanceid = instance['InstanceId']
