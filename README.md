@@ -17,7 +17,7 @@ Please check wiki pages.
 
 * [Amazon CloudWatch Metrics monitoring Template](https://github.com/tech-sketch/zabbix_aws_template/wiki/Amazon-CloudWatch-Metrics-monitoring-Template)
 * [AWS Service Health Dashboard monitoring Template](https://github.com/tech-sketch/zabbix_aws_template/wiki/AWS-Service-Health-Dashboard-monitoring-Template)
-* [AWS EC2 AutoScaling monitoring Template](https://github.com/tech-sketch/zabbix_aws_template/wiki/AWS-EC2-AutoScaling-monitoring-Template))
+* [AWS EC2 AutoScaling monitoring Template](https://github.com/tech-sketch/zabbix_aws_template/wiki/AWS-EC2-AutoScaling-monitoring-Template)
 
 # License
 
