@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2016-08-08T07:06:03Z</date>
+    <date>2016-08-21T11:19:51Z</date>
     <groups>
         <group>
             <name>SNS</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template AWS SNS EVENT AutoScaling_LAUNCH</template>
-            <name>Template AWS SNS EVENT AutoScaling_LAUNCH</name>
+            <template>Template AWS SNS EVENT AutoScaling</template>
+            <name>Template AWS SNS EVENT AutoScaling</name>
             <groups>
                 <group>
                     <name>SNS</name>
@@ -231,28 +231,18 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template AWS SNS EVENT AutoScaling_LAUNCH:sns.event.regexp(INSTANCE_LAUNCH)}=1</expression>
-            <name>ec2.Auto_Scaling_Status_LAUNCH</name>
+            <expression>{Template AWS SNS EVENT AutoScaling:sns.event.regexp(INSTANCE_LAUNCH_ERROR)}=1</expression>
+            <name>AutoScaling_Instance_Launch_Error</name>
             <url/>
             <status>0</status>
-            <priority>1</priority>
+            <priority>3</priority>
             <description/>
             <type>1</type>
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{Template AWS SNS EVENT EC2:sns.event.regexp(INSTANCE_TERMINATE)}=1</expression>
-            <name>ec2.Auto_Scaling_Status_TERMINATE</name>
-            <url/>
-            <status>0</status>
-            <priority>1</priority>
-            <description/>
-            <type>1</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
-            <expression>{Template AWS SNS EVENT Other:sns.event.regexp(ALARM)}=1</expression>
-            <name>ec2_ALARM</name>
+            <expression>{Template AWS SNS EVENT AutoScaling:sns.event.regexp(INSTANCE_TERMINATE_ERROR)}=1</expression>
+            <name>AutoScaling_Instance_Terminate_Error</name>
             <url/>
             <status>0</status>
             <priority>3</priority>
@@ -262,7 +252,7 @@
         </trigger>
         <trigger>
             <expression>{Template AWS SNS EVENT EC2:sns.event.regexp(ALARM)}=1</expression>
-            <name>ec2_ALARM</name>
+            <name>EC2_Alarm</name>
             <url/>
             <status>0</status>
             <priority>3</priority>
@@ -271,8 +261,38 @@
             <dependencies/>
         </trigger>
         <trigger>
+            <expression>{Template AWS SNS EVENT EC2:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
+            <name>EC2_InsufficientData</name>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description/>
+            <type>1</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template AWS SNS EVENT Other:sns.event.regexp(ALARM)}=1</expression>
+            <name>Other_Service_Alarm</name>
+            <url/>
+            <status>0</status>
+            <priority>3</priority>
+            <description/>
+            <type>1</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template AWS SNS EVENT Other:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
+            <name>Other_Service_InsufficientData</name>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description/>
+            <type>1</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
             <expression>{Template AWS SNS EVENT RDS:sns.event.regexp(ALARM)}=1</expression>
-            <name>ec2_ALARM</name>
+            <name>RDS_Alarm</name>
             <url/>
             <status>0</status>
             <priority>3</priority>
@@ -282,27 +302,7 @@
         </trigger>
         <trigger>
             <expression>{Template AWS SNS EVENT RDS:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
-            <name>ec2_INSUFFICIENT_DATA</name>
-            <url/>
-            <status>0</status>
-            <priority>2</priority>
-            <description/>
-            <type>1</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
-            <expression>{Template AWS SNS EVENT EC2:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
-            <name>ec2_INSUFFICIENT_DATA</name>
-            <url/>
-            <status>0</status>
-            <priority>2</priority>
-            <description/>
-            <type>1</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
-            <expression>{Template AWS SNS EVENT Other:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
-            <name>ec2_INSUFFICIENT_DATA</name>
+            <name>RDS_InsufficientData</name>
             <url/>
             <status>0</status>
             <priority>2</priority>
