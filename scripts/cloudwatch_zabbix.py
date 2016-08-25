@@ -161,6 +161,7 @@ class AwsZabbix:
                 break
             response += data
 
+        print send_data_string
         print response[13:]
         zbx_client.close()
 
