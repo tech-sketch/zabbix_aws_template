@@ -11,44 +11,54 @@ def lambda_handler(event, context):
     return response
 
 def operation_ec2(event):
-    def getInstanceState(ec2):
-        return ec2.state['Name']
-    
-    def checkStatusCode(response,operation):
+    def checkExecResult(response):
         print(response)
         if(response["ResponseMetadata"]["HTTPStatusCode"] == 200):
-            return {
-                "message": "Succeed: " + operation + " Instance"
-                }
+            return "Succeed"
         else:
-            return{
-                "message": "Failed: " + operation +" Instance"
-                }
-    
+            return "Failed"    
+
     def stopEC2(ec2):
-        return checkStatusCode(ec2.stop(),operation="Stop")
+        execResult = ec2.stop()
+        return checkExecResult(execResult)
         
     def startEC2(ec2):
-        return checkStatusCode(ec2.start(),operation="Start")
+        execResult = ec2.start()
+        return checkExecResult(execResult)
+
+    def checkInstanceState(ec2):
+        if(ec2.state['Name'] == "runnning" or ec2.state['Name'] == "stopping"):
+            return True
+        else:
+            return False
+
+    response = {
+        "message" : None,
+        "instance_id": None,
+        "operation": None
+    }
 
     if "instanceid" not in event: 
-        return {
-            "message": "Not Found Instance-ID"
-            }
-            
+        response["message"] = "Not Found InstanceID"
+        return response        
+    
+    if "operation" not in event:
+        response["message"] = "Not Found Operation"
+        return response    
+
     instanceid = event["instanceid"]
     
-    print("instance-id: " + instanceid)    
+    print("instance_id: " + instanceid)    
     ec2 = boto3.resource('ec2').Instance(instanceid)
     
-    msg = "Failed"
-    if(getInstanceState(ec2) == "running"):
-        print("Stop EC2: " + instanceid)
-        msg = stopEC2(ec2)
-    else:
-        print("Start EC2: "+instanceid)
-        msg = startEC2(ec2)
+    if(checkInstanceState(ec2)):
+        if(event["operation"] == "stop")
+            print("Stop EC2: " + instanceid)
+            response["operation"] = "stop"
+            response["operation"] = stopEC2(ec2)
+        else:
+            print("Start EC2: "+instanceid)
+            response["operation"] = "start"
+            response["operation"] = startEC2(ec2)
     
-    return {
-        "message": msg
-        }
+    return response
