@@ -26,39 +26,47 @@ def operation_ec2(event):
         execResult = ec2.start()
         return checkExecResult(execResult)
 
-    def checkInstanceState(ec2):
-        if(ec2.state['Name'] == "runnning" or ec2.state['Name'] == "stopping"):
-            return True
-        else:
-            return False
+    def checkInstanceState(ec2,operation):
+        if(operation == "start"):
+            if(ec2.state['Name'] == "stopped"):
+                return True
+        elif(operation == "stop"):
+            if(ec2.state['Name'] == "running"):
+                return True
+        return False
 
     response = {
-        "message" : None,
+        "message" : "Nothing Operation",
         "instance_id": None,
         "operation": None
     }
 
-    if "instanceid" not in event: 
+    if "instance_id" not in event: 
         response["message"] = "Not Found InstanceID"
         return response        
     
     if "operation" not in event:
         response["message"] = "Not Found Operation"
-        return response    
-
-    instanceid = event["instanceid"]
+        return response
+    
+    print(event)
+    instanceid = event["instance_id"]
+    response["instance_id"] = instanceid
     
     print("instance_id: " + instanceid)    
     ec2 = boto3.resource('ec2').Instance(instanceid)
     
-    if(checkInstanceState(ec2)):
-        if(event["operation"] == "stop")
+    if(checkInstanceState(ec2,event["operation"])):
+        if(event["operation"] == "stop"):
             print("Stop EC2: " + instanceid)
             response["operation"] = "stop"
-            response["operation"] = stopEC2(ec2)
-        else:
-            print("Start EC2: "+instanceid)
+            response["message"] = stopEC2(ec2)
+        elif(event["operation"] == "start"):
+            print("Start EC2: " + instanceid)
             response["operation"] = "start"
-            response["operation"] = startEC2(ec2)
-    
+            response["message"] = startEC2(ec2)
+        else:
+            response["message"] = "Invalid Operation."
+    else:
+        response["message"] = "Cannot Operation. Instance State is " + ec2.state['Name'] + "."
     return response
