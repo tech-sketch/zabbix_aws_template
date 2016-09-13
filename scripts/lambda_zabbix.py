@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--funcname',required=True, help='Set Function Name of AWS Lambda (e.g: arn:aws:lambda:ap-northeast-1:*******:function:Test')
     parser.add_argument('-i', '--invocationtype',default='RequestResponse',help='Set invocation type: RequestResponse(sync), Event(async) or DryRun(test)')
     parser.add_argument('-l', '--logtype',default='Tail',help='Set log data type. You can set this parameter only if you specify the InvocationType with value RequestResponse. Tail: Returns base64 encoded last 4KB of log. None: No returns log.')
-    parser.add_argument('-p', '--payload',default={}, help= 'Set payload if you want to include intanceid or, AWS Service. The payload must be json. (e.g. {"instanceid":"xxxxx"}')
+    parser.add_argument('-p', '--payload',default={}, help= 'Set payload if you want to include intanceid, AWS Service and so on. The payload must be json. (e.g. {"instance_id":"xxxxx"}')
     parser.add_argument('-d', '--debuglevel',default="info",help='Debug Level: INFO, WARNING, ERROR')
 
     args = parser.parse_args()
