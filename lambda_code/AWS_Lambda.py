@@ -26,7 +26,7 @@ def operation_ec2(event):
         execResult = ec2.start()
         return checkExecResult(execResult)
 
-    def checkInstanceState(ec2,operation):
+    def checkOperationalInstance(ec2,operation):
         if(operation == "start"):
             if(ec2.state['Name'] == "stopped"):
                 return True
@@ -45,13 +45,14 @@ def operation_ec2(event):
         response["message"] = "Not Found InstanceID"
         return response        
     
+    response["instance_id"] = instanceid
+    
     if "operation" not in event:
         response["message"] = "Not Found Operation"
         return response
     
     print(event)
     instanceid = event["instance_id"]
-    response["instance_id"] = instanceid
     
     print("instance_id: " + instanceid)    
     ec2 = boto3.resource('ec2').Instance(instanceid)
