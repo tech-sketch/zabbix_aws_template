@@ -31,8 +31,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Lambda Parameter.')
 
     parser.add_argument('-r', '--region', required=True, help='Set AWS region name(e.g.: ap-northeast-1)')
-    parser.add_argument('-a', '--accesskey', required=True, help='Set AWS Access Key ID')
-    parser.add_argument('-s', '--secretkey', required=True, help='Set AWS Secret Access Key')
+    parser.add_argument('-a', '--accesskey', help='Set AWS Access Key ID')
+    parser.add_argument('-s', '--secretkey', help='Set AWS Secret Access Key')
     parser.add_argument('-f', '--funcname',required=True, help='Set Function Name of AWS Lambda (e.g: arn:aws:lambda:ap-northeast-1:*******:function:Test')
     parser.add_argument('-i', '--invocationtype',default='RequestResponse',help='Set invocation type: RequestResponse(sync), Event(async) or DryRun(test)')
     parser.add_argument('-l', '--logtype',default='Tail',help='Set log data type. You can set this parameter only if you specify the InvocationType with value RequestResponse. Tail: Returns base64 encoded last 4KB of log. None: No returns log.')
