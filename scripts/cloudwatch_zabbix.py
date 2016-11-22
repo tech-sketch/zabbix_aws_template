@@ -132,7 +132,7 @@ class AwsZabbix:
                 send_item["key"] = 'cloudwatch.metric[%s.%s]' % (metric.name, servicename)
             else:
                 send_item["key"] = 'cloudwatch.metric[%s]' % metric.name
-            send_item["value"] = datapoint["Average"]
+            send_item["value"] = str(datapoint["Average"])
             send_item["clock"] = calendar.timegm(datapoint["Timestamp"].utctimetuple())
             send_items.append(send_item)
         return send_items
@@ -161,7 +161,6 @@ class AwsZabbix:
                 break
             response += data
 
-        print send_data_string
         print response[13:]
         zbx_client.close()
 
