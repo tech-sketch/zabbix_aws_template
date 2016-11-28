@@ -119,7 +119,9 @@ class AwsZabbix:
 
     def __get_send_items(self, stats, metric):
         send_items = []
-        for datapoint in stats["Datapoints"]:
+        datapoints = stats["Datapoints"]
+        datapoints = sorted(datapoints, key=lambda datapoints: datapoints["Timestamp"], reverse=True)
+        for datapoint in datapoints:
             servicename = ''
             send_json_string = '{"host":"", "key":"", "value":"", "clock":""}'
             send_item = json.loads(send_json_string)
@@ -135,6 +137,7 @@ class AwsZabbix:
             send_item["value"] = str(datapoint["Average"])
             send_item["clock"] = calendar.timegm(datapoint["Timestamp"].utctimetuple())
             send_items.append(send_item)
+            break
         return send_items
 
 
