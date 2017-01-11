@@ -301,6 +301,16 @@
             <dependencies/>
         </trigger>
         <trigger>
+            <expression>{Template AWS SNS EVENT RDS:sns.event.regexp(&quot;^EventId.*RDS-EVENT-(0022|0031|0034|0035|0036|0045|0069)&quot;)}=1</expression>
+            <name>RDS_Failure_notification</name>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>1</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
             <expression>{Template AWS SNS EVENT RDS:sns.event.regexp(INSUFFICIENT_DATA)}=1</expression>
             <name>RDS_InsufficientData</name>
             <url/>

@@ -44,14 +44,13 @@ class SnsZabbix:
             send_item["value"] = os.linesep.join(value)
 
         elif event_type == "RDS":
-            replace = re.compile("(.*)(#\n)(.*:)(.*)")
-            match = replace.match(message["Identifier Link"])
-            send_item["host"] = match.group(4).strip()
+            send_item["host"] = message["Source ID"]
 
             value = []
             value.append("EventSource : " + message["Event Source"])
-            value.append("IdentifierLink : " + match.group(1))
-            value.append("SourceId : " + match.group(4))
+            value.append("IdentifierLink : " + message["Identifier Link"])
+            value.append("SourceId : " + message["Source ID"])
+            value.append("EventId : " + message["Event ID"])
             value.append("EventMessage : " + message["Event Message"])
             value.append("TopicArn : "+ record['Sns']['TopicArn'])
             send_item["value"] = os.linesep.join(value)
