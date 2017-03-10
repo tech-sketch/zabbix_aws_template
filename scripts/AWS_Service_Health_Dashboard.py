@@ -29,7 +29,10 @@ class AWSSHDParser(HTMLParser):
 
 
     def get_rss(self, url):
-        send_data = json.loads('{"request":"sender data","data":[]}')
+        now = "%.9f" % time.time()
+        sec = now.split(".")[0]
+        ns = now.split(".")[1]
+        send_data = json.loads('{"request":"sender data","data":[],"clock":%s,"ns":%s }' % (sec, ns))
         response = feedparser.parse(url)
         send_items = []
 
