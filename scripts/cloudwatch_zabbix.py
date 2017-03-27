@@ -40,6 +40,15 @@ class AwsZabbix:
             aws_access_key_id=access_key,
             aws_secret_access_key=secret
         )
+        self.sum_stat_metrics = [
+            {'namespace': 'AWS/ELB', 'metricname': 'RequestCount'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_Backend_2XX'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_Backend_3XX'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_Backend_4XX'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_Backend_5XX'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_ELB_4XX'},
+            {'namespace': 'AWS/ELB', 'metricname': 'HTTPCode_ELB_5XX'}
+        ]
 
     def __get_metric_list(self):
         resp = self.client.list_metrics(
@@ -134,12 +143,19 @@ class AwsZabbix:
                 send_item["key"] = 'cloudwatch.metric[%s.%s]' % (metric.name, servicename)
             else:
                 send_item["key"] = 'cloudwatch.metric[%s]' % metric.name
-            send_item["value"] = str(datapoint["Average"])
+            send_item["value"] = self.__get_datapoint_value_string(datapoint)
             send_item["clock"] = calendar.timegm(datapoint["Timestamp"].utctimetuple())
             send_items.append(send_item)
             break
         return send_items
 
+    def __get_datapoint_value_string(self, datapoint):
+        if datapoint.has_key("Average"):
+            return str(datapoint["Average"])
+        elif datapoint.has_key("Sum"):
+            return str(datapoint["Sum"])
+        else:
+            return ""
 
     def __send_to_zabbix(self, send_data):
         send_data_string = json.dumps(send_data)
@@ -181,7 +197,14 @@ class AwsZabbix:
                 for dimension in metric.dimensions:
                     if dimension["Name"] == "ServiceName":
                         servicename = dimension["Value"]
-            stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min)
+            target_metric_info = {'namespace': metric.namespace, 'metricname': metric.name}
+            for sum_stat_metric in self.sum_stat_metrics:  # for support each region metrics (RequestCount, RequestCount.ap-northeast-1 etc.)
+                if metric.name.find(sum_stat_metric['metricname']) == 0:  # Only convert when finding the begging of string.
+                    target_metric_info['metricname'] = sum_stat_metric['metricname']
+            if target_metric_info in self.sum_stat_metrics:
+                stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min, 'Sum')
+            else:
+                stats = self.__get_metric_stats(metric.name, metric.namespace, servicename, self.timerange_min)
             send_data["data"].extend(self.__get_send_items(stats, metric))
         self.__send_to_zabbix(send_data)
 
