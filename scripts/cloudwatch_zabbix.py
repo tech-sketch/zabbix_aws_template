@@ -169,7 +169,10 @@ class AwsZabbix:
 
 
     def send_metric_data_to_zabbix(self):
-        send_data = json.loads('{"request":"sender data","data":[]}')
+        now = "%.9f" % time.time()
+        sec = now.split(".")[0]
+        ns = now.split(".")[1]
+        send_data = json.loads('{"request":"sender data","data":[],"clock":%s,"ns":%s }' % (sec, ns))
         metric_list = self.__get_metric_list()
         all_metric_stats = []
         servicename = self.service

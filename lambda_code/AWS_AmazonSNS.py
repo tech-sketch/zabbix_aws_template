@@ -103,7 +103,10 @@ class SnsZabbix:
             return "Other"
 
     def send_to_zabbix(self):
-        send_data = json.loads('{"request":"sender data","data":[]}')
+        now = "%.9f" % time.time()
+        sec = now.split(".")[0]
+        ns = now.split(".")[1]
+        send_data = json.loads('{"request":"sender data","data":[],"clock":%s,"ns":%s }' % (sec, ns))
         send_data["data"] = self.send_items
         send_data_string = json.dumps(send_data)
         zbx_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
