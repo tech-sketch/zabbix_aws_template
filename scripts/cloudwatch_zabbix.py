@@ -20,11 +20,12 @@ class Metric:
 
 class AwsZabbix:
 
-    def __init__(self, region, access_key, secret, identity, service, timerange_min,
+    def __init__(self, region, access_key, secret, identity, hostname, service, timerange_min,
                  zabbix_host='localhost', zabbix_port=10051):
         self.zabbix_host = zabbix_host
         self.zabbix_port = zabbix_port
         self.identity = identity
+        self.hostname = hostname
         self.service = service
         self.timerange_min = timerange_min
         self.id_dimentions = {
@@ -135,7 +136,11 @@ class AwsZabbix:
             send_json_string = '{"host":"", "key":"", "value":"", "clock":""}'
             send_item = json.loads(send_json_string)
 
-            send_item["host"] = self.identity
+            if self.hostname == "undefined":
+                send_item["host"] = self.identity
+            else:
+                send_item["host"] = self.hostname
+
             if self.service == "billing":
                 for dimension in metric.dimensions:
                     if dimension["Name"] == "ServiceName":
@@ -233,13 +238,14 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--accesskey', default=os.getenv("AWS_ACCESS_KEY_ID"), help='set AWS Access Key ID')
     parser.add_argument('-s', '--secret', default=os.getenv("AWS_SECRET_ACCESS_KEY"), help='set AWS Secret Access Key')
     parser.add_argument('-i', '--identity', required=True, help='set Identity data (ec2: InstanceId, elb: LoadBalancerName, rds: DBInstanceIdentifier, ebs: VolumeId)')
+    parser.add_argument('-H', '--hostname', default='undefined', help='set string that has to match HOST.HOST. defaults to identity)')
     parser.add_argument('-m', '--send-mode', default='False', help='set True if you send statistic data (e.g.: True or False)')
     parser.add_argument('-t', '--timerange', type=int, default=10, help='set Timerange min')
     parser.add_argument('service', metavar='service_name', help='set Service name (e.g.: ec2 or elb or rds')
 
     args = parser.parse_args()
 
-    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, service=args.service, timerange_min=args.timerange)
+    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, hostname=args.hostname, service=args.service, timerange_min=args.timerange)
 
     if args.send_mode.upper() == 'TRUE':
         aws_zabbix.send_metric_data_to_zabbix()
