@@ -21,7 +21,7 @@ class Metric:
 class AwsZabbix:
 
     def __init__(self, region, access_key, secret, identity, hostname, service, timerange_min,
-                 zabbix_host='localhost', zabbix_port=10051):
+                 zabbix_host, zabbix_port):
         self.zabbix_host = zabbix_host
         self.zabbix_port = zabbix_port
         self.identity = identity
@@ -241,11 +241,15 @@ if __name__ == '__main__':
     parser.add_argument('-H', '--hostname', default='undefined', help='set string that has to match HOST.HOST. defaults to identity)')
     parser.add_argument('-m', '--send-mode', default='False', help='set True if you send statistic data (e.g.: True or False)')
     parser.add_argument('-t', '--timerange', type=int, default=10, help='set Timerange min')
+    parser.add_argument('-p', '--zabbix-port', type=int, default=10051, help='set listening port number for Zabbix server')
+    parser.add_argument('-z', '--zabbix-host', default='localhost', help='set listening IP address for Zabbix server')
     parser.add_argument('service', metavar='service_name', help='set Service name (e.g.: ec2 or elb or rds')
 
     args = parser.parse_args()
 
-    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret, identity=args.identity, hostname=args.hostname, service=args.service, timerange_min=args.timerange)
+    aws_zabbix = AwsZabbix(region=args.region, access_key=args.accesskey, secret=args.secret,
+                           identity=args.identity, hostname=args.hostname, service=args.service,
+                           timerange_min=args.timerange, zabbix_host=args.zabbix_host, zabbix_port=args.zabbix_port)
 
     if args.send_mode.upper() == 'TRUE':
         aws_zabbix.send_metric_data_to_zabbix()
