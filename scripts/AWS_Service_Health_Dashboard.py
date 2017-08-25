@@ -17,7 +17,7 @@ from HTMLParser import HTMLParser
 class AWSSHDParser(HTMLParser):
 
 
-    def __init__(self, base_url, block, zabbix_host='localhost', zabbix_port=10051):
+    def __init__(self, base_url, block, zabbix_host, zabbix_port):
         HTMLParser.__init__(self)
         self.block = block
         self.check = False
@@ -132,7 +132,9 @@ if __name__== "__main__":
     parser.add_argument('-b', '--block', default="AP", help='set AWS region block(e.g.:NA or SA or EU or AP)')
     parser.add_argument('-i', '--interval', type=int, help='set interval time (seconds)')
     parser.add_argument('-m', '--send-mode', default='False', help='set True if you send AWS Service Health Dashboard status information. set False if you want to get lld format service list. (e.g.: True or False)')
-    
+    parser.add_argument('-p', '--zabbix-port', type=int, default=10051, help='set listening port number for Zabbix server')
+    parser.add_argument('-z', '--zabbix-host', default='localhost', help='set listening IP address for Zabbix server')
+
     block_list = ["NA", "SA", "EU", "AP"]
     args = parser.parse_args()
     
@@ -143,7 +145,7 @@ if __name__== "__main__":
     
     htmldata = urllib2.urlopen(base_url)
     
-    parser = AWSSHDParser(base_url, args.block)
+    parser = AWSSHDParser(base_url, args.block, args.zabbix_host, args.zabbix_port)
     parser.feed(htmldata.read())
 
     if args.send_mode.upper() == "TRUE":
