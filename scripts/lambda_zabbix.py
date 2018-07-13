@@ -27,7 +27,9 @@ class AWSLambda:
         logging.debug(base64.b64decode(response["LogResult"]))
         
         payload = json.loads(response['Payload'].read().decode('utf-8'))
-        logging.info(payload["message"])
+        logging.info("ResponseCode: %d" % response['ResponseMetadata']['HTTPStatusCode'])
+        if payload and "message" in payload:
+            logging.info(payload["message"])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Lambda Parameter.')
