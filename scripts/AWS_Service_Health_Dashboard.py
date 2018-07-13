@@ -140,7 +140,7 @@ if __name__== "__main__":
         print "please set block name. :" + " or ".join(map(str, block_list))
 
     base_url = "http://status.aws.amazon.com/"
-    
+    socket.setdefaulttimeout(30) 
     htmldata = urllib2.urlopen(base_url)
     
     parser = AWSSHDParser(base_url, args.block)
