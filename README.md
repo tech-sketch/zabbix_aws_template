@@ -26,9 +26,11 @@ The Apache v2 full text is published at this link(http://www.apache.org/licenses
 
 # Contact
 
-TIS Inc.
-OSS Promotion Office
-oss@pj.tis.co.jp
+VINX CORP.
+
+Technical support service is provided by VINX CORP.
+
+https://www.vinx.co.jp/awszabbix/index.html
 
 ---
 Copyright 2016 TIS Inc.
